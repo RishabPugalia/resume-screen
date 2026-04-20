@@ -1,0 +1,1570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resume Screening App — AI-Powered</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --card: #16161f;
+    --card2: #1c1c28;
+    --border: #2a2a3a;
+    --accent: #6c63ff;
+    --accent2: #ff6584;
+    --accent3: #43e97b;
+    --amber: #f0b429;
+    --text: #f0f0f8;
+    --muted: #8080a0;
+    --subtle: #2e2e42;
+    --r: 12px;
+    --font: 'DM Sans', sans-serif;
+    --serif: 'Instrument Serif', serif;
+  }
+
+  html {
+    background: #0a0a0f;
+  }
+  body {
+    background: #0a0a0f !important;
+    background-color: #0a0a0f !important;
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--subtle); border-radius: 3px; }
+
+  /* ─── LAYOUT ─── */
+  .app { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+
+  /* ─── HEADER ─── */
+  .header {
+    text-align: center;
+    padding: 3rem 0 2.5rem;
+    position: relative;
+  }
+  .header::before {
+    display: none;
+  }
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 7px 16px;
+    margin-bottom: 1.75rem;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+  }
+  .pulse {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent3);
+    position: relative;
+  }
+  .pulse::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1.5px solid var(--accent3);
+    animation: pulse 2s ease infinite;
+    opacity: 0;
+  }
+  @keyframes pulse { 0%{transform:scale(1);opacity:.6} 100%{transform:scale(2);opacity:0} }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    position: relative;
+    z-index: 1;
+    color: #f0f0f8;
+  }
+  h1 em { color: var(--accent); font-style: italic; }
+  .header p {
+    color: #9090b0;
+    font-size: 15px;
+    margin-top: 0.875rem;
+    line-height: 1.65;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── TABS ─── */
+  .tab-bar {
+    display: flex;
+    gap: 5px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 5px;
+    margin-bottom: 2rem;
+    width: fit-content;
+  }
+  .tab {
+    padding: 8px 22px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--muted);
+    border: none;
+    background: transparent;
+    font-family: var(--font);
+    position: relative;
+  }
+  .tab.active { background: var(--accent); color: #fff; }
+  .tab:hover:not(.active) { background: var(--subtle); color: var(--text); }
+  .tab .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.2);
+    border-radius: 100px;
+    font-size: 10px;
+    width: 16px; height: 16px;
+    margin-left: 5px;
+  }
+  .tab:not(.active) .badge { background: var(--subtle); }
+
+  /* ─── SECTIONS ─── */
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ─── UPLOAD ZONE ─── */
+  .upload-zone {
+    border: 1.5px dashed var(--subtle);
+    border-radius: 16px;
+    padding: 3.5rem 2rem;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+    position: relative;
+    background: var(--card);
+  }
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--accent);
+    background: rgba(108,99,255,0.05);
+  }
+  .upload-zone input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+  .upload-icon {
+    width: 56px; height: 56px;
+    background: rgba(108,99,255,0.12);
+    border: 1px solid rgba(108,99,255,0.2);
+    border-radius: var(--r);
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .upload-icon svg { width: 26px; height: 26px; stroke: var(--accent); fill: none; stroke-width: 1.5; }
+  .upload-zone h3 { font-size: 17px; font-weight: 500; margin-bottom: 0.5rem; }
+  .upload-zone p { font-size: 13px; color: var(--muted); }
+  .btn-outline {
+    display: inline-block;
+    margin-top: 1.25rem;
+    padding: 9px 22px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font);
+  }
+  .btn-outline:hover { background: var(--subtle); border-color: var(--accent); }
+
+  /* ─── FILE LIST ─── */
+  #file-list { margin-top: 1rem; }
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 13px;
+    animation: slideIn 0.2s ease;
+  }
+  @keyframes slideIn { from{opacity:0;transform:translateX(-8px)} to{opacity:1;transform:translateX(0)} }
+  .fi-icon {
+    width: 34px; height: 34px;
+    border-radius: 8px;
+    background: rgba(108,99,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .fi-ext { font-size: 9px; font-weight: 700; color: var(--accent); letter-spacing: 0.3px; }
+  .fi-name { flex: 1; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fi-size { color: var(--muted); font-size: 12px; white-space: nowrap; }
+  .fi-status { width: 20px; height: 20px; border-radius: 50%; background: rgba(67,233,123,0.15); display: flex; align-items: center; justify-content: center; }
+  .fi-remove {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--subtle);
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+    font-size: 16px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .fi-remove:hover { background: var(--accent2); color: #fff; }
+
+  /* ─── FORM FIELDS ─── */
+  .field-group { margin-top: 1.5rem; }
+  .field-group label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 0.625rem;
+    letter-spacing: 0.3px;
+  }
+  .field-group label span { font-weight: 400; }
+  textarea, input[type="text"] {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 0.875rem 1rem;
+    font-family: var(--font);
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: all 0.2s;
+    line-height: 1.65;
+  }
+  textarea { resize: vertical; min-height: 120px; }
+  textarea:focus, input[type="text"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(108,99,255,0.1);
+  }
+  textarea::placeholder, input::placeholder { color: var(--subtle); }
+
+  /* ─── CRITERIA ─── */
+  .criteria-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 8px;
+    margin-top: 0.75rem;
+  }
+  .criterion {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13px;
+    color: var(--muted);
+    user-select: none;
+  }
+  .criterion.on {
+    border-color: var(--accent);
+    background: rgba(108,99,255,0.08);
+    color: var(--text);
+  }
+  .cbox {
+    width: 17px; height: 17px;
+    border-radius: 5px;
+    border: 1.5px solid var(--subtle);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    font-size: 11px;
+  }
+  .criterion.on .cbox {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* ─── WEIGHTS ─── */
+  .weight-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0.625rem;
+  }
+  .weight-label { font-size: 13px; color: var(--text); width: 140px; flex-shrink: 0; }
+  .weight-slider { flex: 1; accent-color: var(--accent); height: 4px; }
+  .weight-val {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    width: 32px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ─── INFO BOX ─── */
+  .info-box {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 0.75rem;
+    padding: 10px 14px;
+    background: var(--card);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    line-height: 1.55;
+  }
+
+  /* ─── PRIMARY BUTTON ─── */
+  .btn-primary {
+    width: 100%;
+    padding: 15px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--r);
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 1.75rem;
+    transition: all 0.2s;
+    letter-spacing: 0.2px;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent);
+    pointer-events: none;
+  }
+  .btn-primary:hover:not(:disabled) { background: #7c74ff; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(108,99,255,0.3); }
+  .btn-primary:active:not(:disabled) { transform: translateY(0); }
+  .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* ─── PROGRESS ─── */
+  .progress-wrap { margin-top: 1.5rem; display: none; }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .progress-bar {
+    height: 5px;
+    background: var(--subtle);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 100px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+  .step-msg {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 0.75rem;
+    min-height: 20px;
+    transition: all 0.3s;
+  }
+  .analyzing-dots::after {
+    content: '';
+    animation: dots 1.2s steps(3, end) infinite;
+  }
+  @keyframes dots { 0%{content:''} 33%{content:'.'} 66%{content:'..'} 100%{content:'...'} }
+
+  /* ─── RESULTS ─── */
+  .score-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 1.75rem;
+  }
+  .score-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1.25rem 1rem;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .score-card:hover { border-color: var(--border); transform: translateY(-1px); }
+  .score-card .num { font-size: 2.5rem; font-weight: 600; line-height: 1; }
+  .score-card .lbl { font-size: 12px; color: var(--muted); margin-top: 0.4rem; }
+  .score-card.green .num { color: var(--accent3); }
+  .score-card.amber .num { color: var(--amber); }
+  .score-card.red .num { color: var(--accent2); }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .result-header h2 { font-family: var(--serif); font-size: 1.5rem; font-weight: 400; }
+  .badge-count {
+    background: rgba(108,99,255,0.15);
+    color: var(--accent);
+    border-radius: 100px;
+    padding: 4px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid rgba(108,99,255,0.2);
+  }
+
+  /* ─── FILTERS ─── */
+  .filters { display: flex; gap: 7px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .filter-btn {
+    padding: 7px 16px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font);
+  }
+  .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .filter-btn:hover:not(.active) { background: var(--subtle); color: var(--text); }
+
+  /* ─── SORT ─── */
+  .sort-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .sort-bar select {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-family: var(--font);
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+  }
+
+  /* ─── CANDIDATE CARD ─── */
+  .candidate-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .candidate-card:hover { border-color: rgba(108,99,255,0.4); background: rgba(108,99,255,0.03); }
+  .candidate-card.expanded { border-color: var(--accent); }
+  .candidate-card .rank {
+    position: absolute;
+    top: 14px; right: 14px;
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--subtle);
+    border-radius: 100px;
+    padding: 3px 10px;
+  }
+
+  .cand-row { display: flex; align-items: center; gap: 14px; }
+  .avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
+    border: 2px solid transparent;
+  }
+  .cand-info { flex: 1; min-width: 0; }
+  .cand-name { font-weight: 500; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cand-meta { font-size: 13px; color: var(--muted); margin-top: 3px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .cand-meta span::before { content: '·'; margin-right: 8px; }
+  .cand-meta span:first-child::before { content: ''; margin-right: 0; }
+
+  .score-pill {
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .score-high { background: rgba(67,233,123,0.12); color: var(--accent3); border: 1px solid rgba(67,233,123,0.2); }
+  .score-mid { background: rgba(240,180,41,0.12); color: var(--amber); border: 1px solid rgba(240,180,41,0.2); }
+  .score-low { background: rgba(255,101,132,0.12); color: var(--accent2); border: 1px solid rgba(255,101,132,0.2); }
+
+  /* ─── EXPAND TOGGLE ─── */
+  .toggle-icon {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--subtle);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s;
+    margin-left: 4px;
+  }
+  .expanded .toggle-icon { transform: rotate(180deg); background: rgba(108,99,255,0.2); }
+  .toggle-icon svg { width: 14px; height: 14px; stroke: var(--muted); fill: none; stroke-width: 2; }
+  .expanded .toggle-icon svg { stroke: var(--accent); }
+
+  /* ─── DETAILS ─── */
+  .cand-details {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+    display: none;
+    animation: fadeIn 0.25s ease;
+  }
+  .expanded .cand-details { display: block; }
+
+  .bar-wrap { margin-bottom: 1.25rem; }
+  .bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 0.35rem; }
+  .bar-track { height: 7px; background: var(--subtle); border-radius: 100px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 100px; transition: width 0.7s cubic-bezier(.4,0,.2,1) 0.1s; }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  @media (max-width: 520px) { .detail-grid { grid-template-columns: 1fr; } }
+  .detail-block label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  .detail-block p { font-size: 13px; color: var(--text); line-height: 1.55; }
+
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .skill-tag {
+    background: var(--subtle);
+    color: var(--muted);
+    border-radius: 100px;
+    padding: 3px 11px;
+    font-size: 12px;
+    border: 1px solid transparent;
+  }
+  .skill-tag.match {
+    background: rgba(108,99,255,0.12);
+    color: var(--accent);
+    border-color: rgba(108,99,255,0.2);
+  }
+
+  .recommendation {
+    border-radius: var(--r);
+    padding: 0.875rem 1.125rem;
+    font-size: 13px;
+    line-height: 1.65;
+    margin-bottom: 1rem;
+    border: 1px solid;
+    position: relative;
+    padding-left: 2.25rem;
+  }
+  .recommendation::before {
+    content: '';
+    position: absolute;
+    left: 1rem; top: 50%;
+    transform: translateY(-50%);
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+  .recommendation.good { background: rgba(67,233,123,0.06); border-color: rgba(67,233,123,0.2); color: #a0ffc0; }
+  .recommendation.good::before { background: var(--accent3); }
+  .recommendation.warn { background: rgba(240,180,41,0.06); border-color: rgba(240,180,41,0.2); color: #ffe08a; }
+  .recommendation.warn::before { background: var(--amber); }
+  .recommendation.no { background: rgba(255,101,132,0.06); border-color: rgba(255,101,132,0.2); color: #ffb3c1; }
+  .recommendation.no::before { background: var(--accent2); }
+
+  .action-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .act-btn {
+    padding: 7px 16px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font);
+  }
+  .act-btn:hover { background: var(--subtle); color: var(--text); border-color: var(--accent); }
+  .act-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .act-btn.primary:hover { background: #7c74ff; }
+
+  /* ─── COMPARE ─── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 1rem;
+  }
+  .compare-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1.25rem;
+  }
+  .compare-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+  .compare-metric { margin-bottom: 0.875rem; }
+  .compare-metric .cm-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 4px; }
+  .compare-metric .cm-val { font-size: 14px; font-weight: 500; }
+
+  /* ─── ANALYTICS ─── */
+  .analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+  @media (max-width: 600px) { .analytics-grid { grid-template-columns: 1fr; } }
+  .analytics-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 1.25rem;
+  }
+  .analytics-card h4 { font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 1rem; }
+  .donut-wrap { display: flex; align-items: center; gap: 16px; }
+  .donut { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+  .donut svg { transform: rotate(-90deg); }
+  .donut-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 600;
+  }
+  .donut-center small { font-size: 10px; color: var(--muted); font-weight: 400; }
+  .legend { flex: 1; }
+  .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 12px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .skill-freq { display: flex; flex-direction: column; gap: 7px; }
+  .sf-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+  .sf-name { width: 90px; color: var(--text); flex-shrink: 0; }
+  .sf-bar-track { flex: 1; height: 5px; background: var(--subtle); border-radius: 3px; overflow: hidden; }
+  .sf-bar-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+  .sf-count { color: var(--muted); width: 20px; text-align: right; }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state { text-align: center; padding: 4rem 1rem; color: var(--muted); }
+  .empty-state svg { width: 52px; height: 52px; stroke: var(--subtle); margin: 0 auto 1rem; display: block; fill: none; stroke-width: 1.2; }
+  .empty-state p { margin-bottom: 0.5rem; }
+  .empty-state small { font-size: 13px; color: var(--subtle); }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed;
+    bottom: 2rem; right: 2rem;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 0.875rem 1.25rem;
+    font-size: 13px;
+    color: var(--text);
+    z-index: 1000;
+    display: flex; align-items: center; gap: 10px;
+    animation: slideUp 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    max-width: 320px;
+  }
+  @keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  .toast-icon { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+  .toast.success .toast-icon { background: rgba(67,233,123,0.15); color: var(--accent3); }
+  .toast.info .toast-icon { background: rgba(108,99,255,0.15); color: var(--accent); }
+
+  /* ─── SECTION TITLES ─── */
+  .section-title {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title small { font-family: var(--font); font-size: 13px; color: var(--muted); font-weight: 400; }
+
+  /* ─── DIVIDER ─── */
+  .divider { height: 1px; background: var(--border); margin: 1.75rem 0; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 600px) {
+    .score-summary { grid-template-columns: repeat(3,1fr); }
+    .tab { padding: 7px 14px; font-size: 12px; }
+    .cand-row { gap: 10px; }
+    .score-pill { padding: 5px 12px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-badge">
+      <span class="pulse"></span>
+      AI-Powered Resume Screener
+    </div>
+    <h1>Screen <em>smarter,</em><br>hire faster.</h1>
+    <p>Upload resumes, define your criteria, and let AI rank your candidates<br>with detailed insights and recommendations in seconds.</p>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <button class="tab active" onclick="switchTab('upload',this)">Upload &amp; Configure</button>
+    <button class="tab" onclick="switchTab('results',this)" id="tab-results">Results</button>
+    <button class="tab" onclick="switchTab('analytics',this)" id="tab-analytics">Analytics</button>
+    <button class="tab" onclick="switchTab('compare',this)" id="tab-compare">Compare <span class="badge" id="compare-badge" style="display:none">0</span></button>
+  </div>
+
+  <!-- ══════════════════════════ UPLOAD SECTION ══════════════════════════ -->
+  <div class="section active" id="upload">
+
+    <div class="upload-zone" id="dropzone">
+      <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.txt" onchange="handleFiles(this.files)">
+      <div class="upload-icon">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+      </div>
+      <h3>Drop resumes here</h3>
+      <p>PDF, DOC, DOCX, TXT &nbsp;·&nbsp; Multiple files allowed</p>
+      <button class="btn-outline" type="button" onclick="event.stopPropagation();document.getElementById('fileInput').click()">Browse files</button>
+    </div>
+    <div id="file-list"></div>
+
+    <div class="divider"></div>
+
+    <!-- JOB DESCRIPTION -->
+    <div class="field-group">
+      <label>Job Description <span style="color:var(--subtle)">(paste or type to improve matching accuracy)</span></label>
+      <textarea id="jdText" rows="5" placeholder="Paste the full job description here — responsibilities, required skills, experience level, qualifications..."></textarea>
+    </div>
+
+    <!-- REQUIRED SKILLS -->
+    <div class="field-group">
+      <label>Must-Have Skills <span style="color:var(--subtle)">(comma separated)</span></label>
+      <input type="text" id="mustSkills" placeholder="e.g. React, Node.js, PostgreSQL, AWS">
+    </div>
+
+    <!-- NICE TO HAVE -->
+    <div class="field-group">
+      <label>Nice-to-Have Skills <span style="color:var(--subtle)">(optional)</span></label>
+      <input type="text" id="niceSkills" placeholder="e.g. Docker, GraphQL, Kubernetes">
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- SCREENING CRITERIA -->
+    <div class="field-group">
+      <label>Screening Criteria <span style="color:var(--subtle)">(select all that apply)</span></label>
+      <div class="criteria-grid" id="criteriaGrid">
+        <div class="criterion on" onclick="toggle(this)" data-key="skills"><span class="cbox">✓</span>Skills match</div>
+        <div class="criterion on" onclick="toggle(this)" data-key="experience"><span class="cbox">✓</span>Years of exp.</div>
+        <div class="criterion on" onclick="toggle(this)" data-key="education"><span class="cbox">✓</span>Education</div>
+        <div class="criterion on" onclick="toggle(this)" data-key="achievements"><span class="cbox">✓</span>Achievements</div>
+        <div class="criterion" onclick="toggle(this)" data-key="leadership"><span class="cbox"></span>Leadership</div>
+        <div class="criterion" onclick="toggle(this)" data-key="remote"><span class="cbox"></span>Remote exp.</div>
+        <div class="criterion" onclick="toggle(this)" data-key="certs"><span class="cbox"></span>Certifications</div>
+        <div class="criterion" onclick="toggle(this)" data-key="culture"><span class="cbox"></span>Culture fit</div>
+        <div class="criterion" onclick="toggle(this)" data-key="communication"><span class="cbox"></span>Communication</div>
+        <div class="criterion" onclick="toggle(this)" data-key="projects"><span class="cbox"></span>Side projects</div>
+      </div>
+    </div>
+
+    <!-- SCORING WEIGHTS -->
+    <div class="field-group" id="weightsSection">
+      <label>Scoring Weights</label>
+      <div id="weightsGrid"></div>
+    </div>
+
+    <div class="info-box">
+      <strong style="color:var(--text)">Pro tip:</strong> Upload multiple resumes at once. The AI will screen all of them simultaneously and rank them against your job description and criteria.
+    </div>
+
+    <button class="btn-primary" id="screenBtn" onclick="startScreening()">
+      ✦ Screen Resumes with AI
+    </button>
+
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-label">
+        <span id="stepName" class="analyzing-dots">Analyzing</span>
+        <span id="pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="step-msg" id="stepMsg">Initializing AI engine...</div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════ RESULTS SECTION ══════════════════════════ -->
+  <div class="section" id="results">
+
+    <div id="resultsArea" style="display:none">
+      <div class="score-summary">
+        <div class="score-card green"><div class="num" id="sumGreen">0</div><div class="lbl">Strong match</div></div>
+        <div class="score-card amber"><div class="num" id="sumAmber">0</div><div class="lbl">Possible match</div></div>
+        <div class="score-card red"><div class="num" id="sumRed">0</div><div class="lbl">Not a match</div></div>
+      </div>
+
+      <div class="result-header">
+        <h2>Candidate Rankings</h2>
+        <span class="badge-count" id="totalBadge">0 screened</span>
+      </div>
+
+      <div class="filters">
+        <button class="filter-btn active" onclick="filterCandidates('all',this)">All</button>
+        <button class="filter-btn" onclick="filterCandidates('high',this)">Strong ≥80%</button>
+        <button class="filter-btn" onclick="filterCandidates('mid',this)">Possible 60–79%</button>
+        <button class="filter-btn" onclick="filterCandidates('low',this)">No match &lt;60%</button>
+      </div>
+
+      <div class="sort-bar">
+        Sort by:
+        <select id="sortSelect" onchange="applySort()">
+          <option value="score">Match score</option>
+          <option value="exp">Experience</option>
+          <option value="name">Name (A–Z)</option>
+        </select>
+      </div>
+
+      <div id="candidateList"></div>
+
+      <div style="margin-top:1.5rem;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn-outline" onclick="exportCSV()">↓ Export CSV</button>
+        <button class="btn-outline" onclick="switchTab('compare', document.getElementById('tab-compare'))">→ Compare selected</button>
+        <button class="btn-outline" onclick="switchTab('upload', document.querySelector('.tab'))">+ Screen more</button>
+      </div>
+    </div>
+
+    <div class="empty-state" id="emptyResults">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <p>No results yet</p>
+      <small>Upload resumes and run the screener to see ranked candidates here.</small>
+      <br><br>
+      <button class="btn-outline" onclick="switchTab('upload', document.querySelector('.tab'))">Go to Upload →</button>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════ ANALYTICS SECTION ══════════════════════════ -->
+  <div class="section" id="analytics">
+
+    <div id="analyticsArea" style="display:none">
+      <div class="section-title">
+        Screening Analytics
+        <small id="analyticsSubtitle"></small>
+      </div>
+
+      <div class="analytics-grid">
+        <!-- Donut chart -->
+        <div class="analytics-card">
+          <h4>Match distribution</h4>
+          <div class="donut-wrap">
+            <div class="donut" id="donutChart"></div>
+            <div class="legend" id="donutLegend"></div>
+          </div>
+        </div>
+        <!-- Skill frequency -->
+        <div class="analytics-card">
+          <h4>Top skills found</h4>
+          <div class="skill-freq" id="skillFreq"></div>
+        </div>
+        <!-- Exp distribution -->
+        <div class="analytics-card">
+          <h4>Experience distribution</h4>
+          <div id="expDist"></div>
+        </div>
+        <!-- Avg scores -->
+        <div class="analytics-card">
+          <h4>Average scores by criteria</h4>
+          <div id="criteriaScores"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" id="emptyAnalytics">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <p>No analytics yet</p>
+      <small>Run the screener to generate insights about your candidate pool.</small>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════ COMPARE SECTION ══════════════════════════ -->
+  <div class="section" id="compare">
+
+    <div class="section-title">
+      Side-by-side Comparison
+      <small id="compareSubtitle">Select candidates from Results to compare</small>
+    </div>
+
+    <div id="compareGrid">
+      <div class="empty-state">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        <p>No candidates selected</p>
+        <small>Click "Add to compare" on any candidate in the Results tab.</small>
+        <br><br>
+        <button class="btn-outline" onclick="switchTab('results', document.getElementById('tab-results'))">View Results →</button>
+      </div>
+    </div>
+
+    <div id="compareActions" style="display:none;margin-top:1.25rem">
+      <button class="btn-outline" onclick="clearCompare()">Clear comparison</button>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toastContainer"></div>
+
+<script>
+/* ═══════════════════ STATE ═══════════════════ */
+let uploadedFiles = [];
+let allCandidates = [];
+let compareList = [];
+let currentFilter = 'all';
+
+const AVATAR_COLORS = [
+  ['#6c63ff','rgba(108,99,255,0.15)'],
+  ['#ff6584','rgba(255,101,132,0.15)'],
+  ['#43e97b','rgba(67,233,123,0.15)'],
+  ['#f0b429','rgba(240,180,41,0.15)'],
+  ['#38bdf8','rgba(56,189,248,0.15)'],
+  ['#a78bfa','rgba(167,139,250,0.15)'],
+];
+
+const WEIGHT_KEYS = {
+  skills:'Skills match', experience:'Experience', education:'Education', achievements:'Achievements',
+  leadership:'Leadership', remote:'Remote exp.', certs:'Certifications', culture:'Culture fit',
+  communication:'Communication', projects:'Side projects'
+};
+
+/* ═══════════════════ DRAG & DROP ═══════════════════ */
+const dropzone = document.getElementById('dropzone');
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.classList.remove('dragover');
+  handleFiles(e.dataTransfer.files);
+});
+
+function handleFiles(files) {
+  let added = 0;
+  for (const f of files) {
+    if (!uploadedFiles.find(x => x.name === f.name)) {
+      uploadedFiles.push(f);
+      added++;
+    }
+  }
+  renderFileList();
+  if (added > 0) showToast('success', `${added} file${added > 1 ? 's' : ''} added`);
+}
+
+function removeFile(i) {
+  uploadedFiles.splice(i, 1);
+  renderFileList();
+}
+
+function renderFileList() {
+  const el = document.getElementById('file-list');
+  el.innerHTML = '';
+  uploadedFiles.forEach((f, i) => {
+    const sz = f.size > 1048576 ? `${(f.size/1048576).toFixed(1)} MB` : `${Math.round(f.size/1024)} KB`;
+    const ext = f.name.split('.').pop().toUpperCase();
+    el.innerHTML += `<div class="file-item">
+      <div class="fi-icon"><span class="fi-ext">${ext}</span></div>
+      <span class="fi-name">${f.name}</span>
+      <span class="fi-size">${sz}</span>
+      <div class="fi-status"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#43e97b" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <button class="fi-remove" onclick="removeFile(${i})" title="Remove">×</button>
+    </div>`;
+  });
+}
+
+/* ═══════════════════ CRITERIA TOGGLE ═══════════════════ */
+function toggle(el) {
+  el.classList.toggle('on');
+  el.querySelector('.cbox').textContent = el.classList.contains('on') ? '✓' : '';
+  renderWeights();
+}
+
+function renderWeights() {
+  const active = [...document.querySelectorAll('.criterion.on')].map(el => el.dataset.key);
+  const grid = document.getElementById('weightsGrid');
+  grid.innerHTML = '';
+  active.forEach(key => {
+    grid.innerHTML += `<div class="weight-row">
+      <span class="weight-label">${WEIGHT_KEYS[key]}</span>
+      <input type="range" class="weight-slider" min="1" max="10" value="5" oninput="this.nextElementSibling.textContent=this.value">
+      <span class="weight-val">5</span>
+    </div>`;
+  });
+}
+renderWeights();
+
+/* ═══════════════════ TABS ═══════════════════ */
+function switchTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ═══════════════════ SCREENING ═══════════════════ */
+const STEPS = [
+  { msg: 'Parsing resume content and extracting text...', pct: 12 },
+  { msg: 'Identifying skills, tools and technologies...', pct: 28 },
+  { msg: 'Analyzing work experience and tenure...', pct: 44 },
+  { msg: 'Evaluating education and certifications...', pct: 60 },
+  { msg: 'Cross-referencing against job description...', pct: 76 },
+  { msg: 'Scoring candidates across all criteria...', pct: 88 },
+  { msg: 'Generating AI insights and recommendations...', pct: 96 },
+  { msg: 'Finalizing rankings...', pct: 100 },
+];
+
+function startScreening() {
+  if (uploadedFiles.length === 0) {
+    loadDemo();
+    return;
+  }
+  runScreening();
+}
+
+function loadDemo() {
+  uploadedFiles = [
+    { name: 'sarah_chen_resume.pdf', size: 245760 },
+    { name: 'priya_patel_cv.pdf', size: 312320 },
+    { name: 'marcus_johnson_resume.docx', size: 189440 },
+    { name: 'david_kim_cv.pdf', size: 198656 },
+    { name: 'emily_rodriguez.pdf', size: 275456 },
+    { name: 'alex_torres_resume.docx', size: 225280 },
+  ];
+  renderFileList();
+  document.getElementById('jdText').value = 'Senior Full Stack Engineer · 5+ years of experience with React and Node.js · PostgreSQL or similar RDBMS · Cloud experience (AWS/GCP preferred) · Strong communication and collaboration skills · Experience in agile teams · Remote-friendly.';
+  document.getElementById('mustSkills').value = 'React, Node.js, PostgreSQL, AWS';
+  document.getElementById('niceSkills').value = 'Docker, TypeScript, Kubernetes';
+  showToast('info', 'Loaded demo data — screening now');
+  runScreening();
+}
+
+function runScreening() {
+  const btn = document.getElementById('screenBtn');
+  const pw = document.getElementById('progressWrap');
+  btn.disabled = true;
+  pw.style.display = 'block';
+  let s = 0;
+  const tick = setInterval(() => {
+    if (s >= STEPS.length) {
+      clearInterval(tick);
+      setTimeout(buildResults, 500);
+      return;
+    }
+    const st = STEPS[s];
+    document.getElementById('progressFill').style.width = st.pct + '%';
+    document.getElementById('pct').textContent = st.pct + '%';
+    document.getElementById('stepMsg').textContent = st.msg;
+    s++;
+  }, 600);
+}
+
+/* ═══════════════════ DEMO DATA ═══════════════════ */
+const DEMO = [
+  {
+    name: 'Sarah Chen', title: 'Senior Full Stack Engineer', exp: 7,
+    skills: ['React','Node.js','AWS','PostgreSQL','TypeScript','Docker','Redis'],
+    matchSkills: ['React','Node.js','AWS','PostgreSQL','TypeScript'],
+    edu: 'MS Computer Science · Stanford University',
+    location: 'San Francisco, CA',
+    achievement: 'Led migration of monolith to microservices serving 2M+ users; reduced infra cost by 35%',
+    score: 94,
+    scores: { skills: 96, experience: 92, education: 95, achievements: 90 },
+    leadership: true,
+    rec: 'Exceptional candidate. Sarah\'s 7 years of full-stack experience, direct skill overlap on all required technologies, and Stanford MS make her the strongest applicant in this pool. Her microservices migration project directly aligns with the role.',
+    tier: 'high',
+  },
+  {
+    name: 'Priya Patel', title: 'Full Stack Developer', exp: 6,
+    skills: ['React','TypeScript','Node.js','MySQL','GCP','Kubernetes','Jest'],
+    matchSkills: ['React','Node.js','TypeScript','GCP'],
+    edu: 'B.Tech Computer Engineering · IIT Bombay',
+    location: 'Remote (India)',
+    achievement: 'Built real-time data pipeline handling 500K events/day; 99.9% uptime over 18 months',
+    score: 88,
+    scores: { skills: 88, experience: 85, education: 90, achievements: 88 },
+    leadership: false,
+    rec: 'Strong match. Priya\'s skills closely align with requirements. Note: she uses MySQL rather than PostgreSQL and GCP over AWS — minor gaps worth discussing in an interview. Her reliability track record is excellent.',
+    tier: 'high',
+  },
+  {
+    name: 'Marcus Johnson', title: 'Software Engineer', exp: 4,
+    skills: ['React','Python','Django','Redis','Heroku','Vue.js'],
+    matchSkills: ['React'],
+    edu: 'BS Computer Science · University of Michigan',
+    location: 'Chicago, IL',
+    achievement: 'Reduced page load time by 65% through lazy loading and code-splitting optimizations',
+    score: 72,
+    scores: { skills: 68, experience: 72, education: 75, achievements: 74 },
+    leadership: false,
+    rec: 'Possible match. Marcus has strong frontend skills but limited Node.js and database experience. The 4 years is slightly below the preferred 5+. Consider if you\'re open to a front-end-leaning engineer willing to ramp on backend.',
+    tier: 'mid',
+  },
+  {
+    name: 'David Kim', title: 'Backend Engineer', exp: 5,
+    skills: ['Node.js','PostgreSQL','Java','Spring Boot','AWS','Terraform'],
+    matchSkills: ['Node.js','PostgreSQL','AWS'],
+    edu: 'BS Software Engineering · UC Berkeley',
+    location: 'Seattle, WA',
+    achievement: 'Scaled REST API from 10K to 1M requests/day using caching and horizontal scaling',
+    score: 63,
+    scores: { skills: 72, experience: 78, education: 70, achievements: 80 },
+    leadership: false,
+    rec: 'Partial match. David\'s backend expertise is impressive, especially his scaling achievement. However, he has minimal React or frontend experience, which is a concern for a full-stack role. Best considered if the role can accommodate a backend-heavy split.',
+    tier: 'mid',
+  },
+  {
+    name: 'Emily Rodriguez', title: 'Frontend Developer', exp: 3,
+    skills: ['React','Vue.js','CSS','Figma','JavaScript','Storybook'],
+    matchSkills: ['React'],
+    edu: 'BS Web Design & Development · Arizona State University',
+    location: 'Austin, TX',
+    achievement: 'Built design system adopted by 20+ product teams; reduced UI development time by 40%',
+    score: 45,
+    scores: { skills: 42, experience: 48, education: 44, achievements: 50 },
+    leadership: false,
+    rec: 'Not a strong match for this full-stack role. Emily\'s expertise is primarily frontend and design — she lacks backend (Node.js), database, and cloud skills. Consider her for a dedicated frontend or design systems position.',
+    tier: 'low',
+  },
+  {
+    name: 'Alex Torres', title: 'DevOps / Full Stack Engineer', exp: 6,
+    skills: ['Node.js','React','AWS','Docker','Kubernetes','Terraform','PostgreSQL','CI/CD'],
+    matchSkills: ['Node.js','React','AWS','PostgreSQL','Docker'],
+    edu: 'BS Computer Science · UT Austin',
+    location: 'Remote',
+    achievement: 'Designed zero-downtime deployment pipeline; reduced release time from 4 hours to 12 minutes',
+    score: 91,
+    scores: { skills: 94, experience: 88, education: 85, achievements: 96 },
+    leadership: true,
+    rec: 'Excellent candidate. Alex brings a rare combination of full-stack development and DevOps expertise that aligns perfectly with the role. Strong cloud/AWS background and remote experience are major positives. Highly recommended for interview.',
+    tier: 'high',
+  },
+];
+
+function buildResults() {
+  allCandidates = uploadedFiles.map((f, i) => {
+    const d = DEMO[i % DEMO.length];
+    const name = f.name === DEMO[i % DEMO.length].name.toLowerCase().replace(/ /g,'_')+'_resume.pdf'
+      ? d.name
+      : f.name.replace(/\.[^.]+$/, '').replace(/[_-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    return { ...d, name };
+  });
+
+  renderResults(allCandidates);
+  renderAnalytics(allCandidates);
+
+  const btn = document.getElementById('screenBtn');
+  btn.disabled = false;
+  document.getElementById('progressWrap').style.display = 'none';
+  document.getElementById('progressFill').style.width = '0';
+
+  document.getElementById('tab-results').classList.remove('active');
+  switchTab('results', document.getElementById('tab-results'));
+  showToast('success', `${allCandidates.length} candidates screened successfully`);
+}
+
+/* ═══════════════════ RENDER RESULTS ═══════════════════ */
+function renderResults(candidates) {
+  document.getElementById('resultsArea').style.display = 'block';
+  document.getElementById('emptyResults').style.display = 'none';
+
+  const high = candidates.filter(c => c.score >= 80).length;
+  const mid = candidates.filter(c => c.score >= 60 && c.score < 80).length;
+  const low = candidates.filter(c => c.score < 60).length;
+  document.getElementById('sumGreen').textContent = high;
+  document.getElementById('sumAmber').textContent = mid;
+  document.getElementById('sumRed').textContent = low;
+  document.getElementById('totalBadge').textContent = candidates.length + ' screened';
+
+  renderCandidateList(candidates);
+}
+
+function renderCandidateList(candidates) {
+  const sorted = sortCandidates(candidates);
+  const list = document.getElementById('candidateList');
+  list.innerHTML = '';
+  sorted.forEach((c, idx) => {
+    const ac = AVATAR_COLORS[idx % AVATAR_COLORS.length];
+    const initials = c.name.split(' ').map(n => n[0]).join('').slice(0, 2);
+    const sc = c.score >= 80 ? 'score-high' : c.score >= 60 ? 'score-mid' : 'score-low';
+    const barColor = c.score >= 80 ? '#43e97b' : c.score >= 60 ? '#f0b429' : '#ff6584';
+    const recClass = c.score >= 80 ? 'good' : c.score >= 60 ? 'warn' : 'no';
+    const inCompare = compareList.find(x => x.name === c.name);
+    const ci = allCandidates.findIndex(x => x.name === c.name);
+
+    list.innerHTML += `<div class="candidate-card" id="card-${ci}" onclick="toggleCard(${ci})">
+      <span class="rank">#${idx+1}</span>
+      <div class="cand-row">
+        <div class="avatar" style="background:${ac[1]};color:${ac[0]};border-color:${ac[0]}33">${initials}</div>
+        <div class="cand-info">
+          <div class="cand-name">${c.name}</div>
+          <div class="cand-meta">
+            <span>${c.title}</span>
+            <span>${c.exp} yrs exp</span>
+            <span>${c.location}</span>
+          </div>
+        </div>
+        <div class="score-pill ${sc}">${c.score}%</div>
+        <div class="toggle-icon">
+          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+      </div>
+
+      <div class="cand-details">
+        <div class="bar-wrap">
+          <div class="bar-label"><span>Overall match score</span><span style="color:${barColor};font-weight:600">${c.score}%</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:${c.score}%;background:${barColor}"></div></div>
+        </div>
+
+        <div class="detail-grid">
+          <div class="detail-block">
+            <label>Matched skills</label>
+            <div class="skill-tags">${c.matchSkills.map(s => `<span class="skill-tag match">${s}</span>`).join('')}</div>
+          </div>
+          <div class="detail-block">
+            <label>All skills</label>
+            <div class="skill-tags">${c.skills.filter(s => !c.matchSkills.includes(s)).map(s => `<span class="skill-tag">${s}</span>`).join('') || '<span style="font-size:13px;color:var(--muted)">No additional skills</span>'}</div>
+          </div>
+          <div class="detail-block">
+            <label>Education</label>
+            <p>${c.edu}</p>
+          </div>
+          <div class="detail-block">
+            <label>Notable achievement</label>
+            <p>${c.achievement}</p>
+          </div>
+        </div>
+
+        ${Object.keys(c.scores).map(k => `
+          <div class="bar-wrap" style="margin-bottom:.625rem">
+            <div class="bar-label"><span style="font-size:12px">${WEIGHT_KEYS[k]||k}</span><span style="font-size:12px">${c.scores[k]}%</span></div>
+            <div class="bar-track" style="height:5px"><div class="bar-fill" style="width:${c.scores[k]}%;background:var(--accent)"></div></div>
+          </div>`).join('')}
+
+        <div class="recommendation ${recClass}" style="margin-top:1rem">${c.rec}</div>
+
+        <div class="action-row" style="margin-top:1rem">
+          <button class="act-btn primary" onclick="event.stopPropagation();addToCompare(${ci})" id="cmp-btn-${ci}">${inCompare ? '✓ In comparison' : '+ Add to compare'}</button>
+          <button class="act-btn" onclick="event.stopPropagation();downloadProfile(${ci})">↓ Export profile</button>
+          <button class="act-btn" onclick="event.stopPropagation();shortlistToggle(${ci},this)" id="sl-btn-${ci}">${c.shortlisted ? '★ Shortlisted' : '☆ Shortlist'}</button>
+        </div>
+      </div>
+    </div>`;
+  });
+}
+
+function toggleCard(i) {
+  const card = document.getElementById('card-'+i);
+  card.classList.toggle('expanded');
+}
+
+function sortCandidates(candidates) {
+  const sort = (document.getElementById('sortSelect') || {}).value || 'score';
+  return [...candidates].sort((a, b) =>
+    sort === 'name' ? a.name.localeCompare(b.name) :
+    sort === 'exp' ? b.exp - a.exp :
+    b.score - a.score
+  );
+}
+
+function applySort() {
+  const filtered = getFilteredCandidates();
+  renderCandidateList(filtered);
+}
+
+function getFilteredCandidates() {
+  if (currentFilter === 'high') return allCandidates.filter(c => c.score >= 80);
+  if (currentFilter === 'mid') return allCandidates.filter(c => c.score >= 60 && c.score < 80);
+  if (currentFilter === 'low') return allCandidates.filter(c => c.score < 60);
+  return allCandidates;
+}
+
+function filterCandidates(type, btn) {
+  currentFilter = type;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCandidateList(getFilteredCandidates());
+}
+
+/* ═══════════════════ ANALYTICS ═══════════════════ */
+function renderAnalytics(candidates) {
+  document.getElementById('analyticsArea').style.display = 'block';
+  document.getElementById('emptyAnalytics').style.display = 'none';
+  document.getElementById('analyticsSubtitle').textContent = candidates.length + ' candidates analyzed';
+
+  const high = candidates.filter(c => c.score >= 80).length;
+  const mid = candidates.filter(c => c.score >= 60 && c.score < 80).length;
+  const low = candidates.filter(c => c.score < 60).length;
+  const total = candidates.length;
+
+  // Donut
+  const r = 34, cx = 40, cy = 40, circ = 2 * Math.PI * r;
+  const segments = [
+    { val: high, color: '#43e97b', label: 'Strong' },
+    { val: mid, color: '#f0b429', label: 'Possible' },
+    { val: low, color: '#ff6584', label: 'No match' },
+  ];
+  let offset = 0;
+  let paths = '';
+  segments.forEach(seg => {
+    const len = (seg.val / total) * circ;
+    paths += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${seg.color}" stroke-width="10" stroke-dasharray="${len} ${circ - len}" stroke-dashoffset="${-offset}" opacity="0.85"/>`;
+    offset += len;
+  });
+  document.getElementById('donutChart').innerHTML = `
+    <svg width="80" height="80" viewBox="0 0 80 80" style="transform:rotate(-90deg)">
+      <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/>
+      ${paths}
+    </svg>
+    <div class="donut-center"><span>${Math.round((high/total)*100)}%</span><small>strong</small></div>`;
+
+  document.getElementById('donutLegend').innerHTML = segments.map(s =>
+    `<div class="legend-item"><span class="legend-dot" style="background:${s.color}"></span><span>${s.label}: <strong>${s.val}</strong></span></div>`
+  ).join('');
+
+  // Skill frequency
+  const skillCount = {};
+  candidates.forEach(c => c.skills.forEach(s => { skillCount[s] = (skillCount[s] || 0) + 1; }));
+  const topSkills = Object.entries(skillCount).sort((a,b) => b[1]-a[1]).slice(0, 8);
+  const maxSk = topSkills[0]?.[1] || 1;
+  document.getElementById('skillFreq').innerHTML = topSkills.map(([sk, n]) =>
+    `<div class="sf-row">
+      <span class="sf-name">${sk}</span>
+      <div class="sf-bar-track"><div class="sf-bar-fill" style="width:${(n/maxSk)*100}%"></div></div>
+      <span class="sf-count">${n}</span>
+    </div>`).join('');
+
+  // Exp distribution
+  const expBuckets = { '0–2': 0, '3–4': 0, '5–6': 0, '7+': 0 };
+  candidates.forEach(c => {
+    if (c.exp <= 2) expBuckets['0–2']++;
+    else if (c.exp <= 4) expBuckets['3–4']++;
+    else if (c.exp <= 6) expBuckets['5–6']++;
+    else expBuckets['7+']++;
+  });
+  const maxExp = Math.max(...Object.values(expBuckets)) || 1;
+  document.getElementById('expDist').innerHTML = Object.entries(expBuckets).map(([label, n]) =>
+    `<div class="sf-row">
+      <span class="sf-name">${label} yrs</span>
+      <div class="sf-bar-track"><div class="sf-bar-fill" style="width:${(n/maxExp)*100}%;background:var(--accent2)"></div></div>
+      <span class="sf-count">${n}</span>
+    </div>`).join('');
+
+  // Criteria avg scores
+  const criteriaKeys = Object.keys(candidates[0].scores);
+  document.getElementById('criteriaScores').innerHTML = criteriaKeys.map(k => {
+    const avg = Math.round(candidates.reduce((s,c) => s + (c.scores[k]||0), 0) / candidates.length);
+    const col = avg >= 80 ? '#43e97b' : avg >= 60 ? '#f0b429' : '#ff6584';
+    return `<div class="sf-row">
+      <span class="sf-name">${WEIGHT_KEYS[k]||k}</span>
+      <div class="sf-bar-track"><div class="sf-bar-fill" style="width:${avg}%;background:${col}"></div></div>
+      <span class="sf-count">${avg}%</span>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════ COMPARE ═══════════════════ */
+function addToCompare(ci) {
+  const c = allCandidates[ci];
+  if (!c) return;
+  if (compareList.find(x => x.name === c.name)) {
+    showToast('info', `${c.name} is already in comparison`);
+    return;
+  }
+  if (compareList.length >= 4) {
+    showToast('info', 'Max 4 candidates can be compared at once');
+    return;
+  }
+  compareList.push({ ...c, ci });
+  updateCompare();
+  showToast('success', `${c.name.split(' ')[0]} added to comparison`);
+
+  const btn = document.getElementById('cmp-btn-' + ci);
+  if (btn) { btn.textContent = '✓ In comparison'; }
+}
+
+function clearCompare() {
+  compareList = [];
+  updateCompare();
+  allCandidates.forEach((_, i) => {
+    const b = document.getElementById('cmp-btn-'+i);
+    if (b) b.textContent = '+ Add to compare';
+  });
+}
+
+function updateCompare() {
+  const badge = document.getElementById('compare-badge');
+  const tab = document.getElementById('tab-compare');
+  if (compareList.length > 0) {
+    badge.style.display = 'inline-flex';
+    badge.textContent = compareList.length;
+  } else {
+    badge.style.display = 'none';
+  }
+  document.getElementById('compareActions').style.display = compareList.length > 0 ? 'block' : 'none';
+  renderCompare();
+}
+
+function renderCompare() {
+  const grid = document.getElementById('compareGrid');
+  if (compareList.length === 0) {
+    grid.innerHTML = `<div class="empty-state">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <p>No candidates selected</p>
+      <small>Click "+ Add to compare" on any candidate in the Results tab.</small>
+      <br><br>
+      <button class="btn-outline" onclick="switchTab('results', document.getElementById('tab-results'))">View Results →</button>
+    </div>`;
+    return;
+  }
+  document.getElementById('compareSubtitle').textContent = `${compareList.length} candidate${compareList.length>1?'s':''} selected`;
+
+  const allScoreKeys = Object.keys(compareList[0].scores || {});
+  grid.innerHTML = `<div class="compare-grid">` + compareList.map((c, idx) => {
+    const ac = AVATAR_COLORS[idx % AVATAR_COLORS.length];
+    const initials = c.name.split(' ').map(n => n[0]).join('').slice(0, 2);
+    const sc = c.score >= 80 ? 'score-high' : c.score >= 60 ? 'score-mid' : 'score-low';
+    return `<div class="compare-card">
+      <div class="compare-header">
+        <div class="avatar" style="background:${ac[1]};color:${ac[0]};border-color:${ac[0]}33;width:38px;height:38px;font-size:13px">${initials}</div>
+        <div>
+          <div style="font-weight:500;font-size:14px">${c.name}</div>
+          <div style="font-size:12px;color:var(--muted)">${c.title}</div>
+        </div>
+      </div>
+      <div class="score-pill ${sc}" style="display:inline-block;margin-bottom:1rem">${c.score}% match</div>
+      <div class="compare-metric"><div class="cm-label">Experience</div><div class="cm-val">${c.exp} years</div></div>
+      <div class="compare-metric"><div class="cm-label">Education</div><div class="cm-val" style="font-size:12px;line-height:1.4">${c.edu}</div></div>
+      <div class="compare-metric">
+        <div class="cm-label">Matched skills</div>
+        <div class="skill-tags">${c.matchSkills.map(s => `<span class="skill-tag match">${s}</span>`).join('')}</div>
+      </div>
+      ${allScoreKeys.map(k => `
+        <div class="compare-metric">
+          <div class="cm-label">${WEIGHT_KEYS[k]||k}</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="bar-track" style="flex:1;height:5px"><div class="bar-fill" style="width:${c.scores[k]}%;background:var(--accent)"></div></div>
+            <span style="font-size:12px;font-weight:600;color:var(--accent)">${c.scores[k]}%</span>
+          </div>
+        </div>`).join('')}
+      <button class="act-btn" style="margin-top:.75rem;width:100%;text-align:center" onclick="removeFromCompare('${c.name}')">Remove</button>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+function removeFromCompare(name) {
+  compareList = compareList.filter(c => c.name !== name);
+  const ci = allCandidates.findIndex(c => c.name === name);
+  if (ci >= 0) {
+    const b = document.getElementById('cmp-btn-'+ci);
+    if (b) b.textContent = '+ Add to compare';
+  }
+  updateCompare();
+}
+
+/* ═══════════════════ SHORTLIST ═══════════════════ */
+function shortlistToggle(ci, btn) {
+  allCandidates[ci].shortlisted = !allCandidates[ci].shortlisted;
+  btn.textContent = allCandidates[ci].shortlisted ? '★ Shortlisted' : '☆ Shortlist';
+  showToast('success', allCandidates[ci].shortlisted ? `${allCandidates[ci].name.split(' ')[0]} shortlisted` : 'Removed from shortlist');
+}
+
+/* ═══════════════════ EXPORT ═══════════════════ */
+function exportCSV() {
+  if (!allCandidates.length) return;
+  const headers = ['Name','Title','Score','Experience','Education','Matched Skills','All Skills','Recommendation'];
+  const rows = allCandidates.map(c => [
+    `"${c.name}"`, `"${c.title}"`, c.score, c.exp,
+    `"${c.edu}"`, `"${c.matchSkills.join(', ')}"`,
+    `"${c.skills.join(', ')}"`, `"${c.rec.replace(/"/g,"'")}"`
+  ]);
+  const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'screened_candidates.csv';
+  a.click();
+  showToast('success', 'CSV exported');
+}
+
+function downloadProfile(ci) {
+  const c = allCandidates[ci];
+  const txt = `CANDIDATE PROFILE\n${'='.repeat(50)}\n\nName: ${c.name}\nTitle: ${c.title}\nExperience: ${c.exp} years\nLocation: ${c.location}\nEducation: ${c.edu}\nMatch Score: ${c.score}%\n\nMatched Skills: ${c.matchSkills.join(', ')}\nAll Skills: ${c.skills.join(', ')}\n\nNotable Achievement:\n${c.achievement}\n\nAI Recommendation:\n${c.rec}\n\nCriteria Scores:\n${Object.entries(c.scores).map(([k,v])=>`  ${WEIGHT_KEYS[k]||k}: ${v}%`).join('\n')}\n`;
+  const a = document.createElement('a');
+  a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(txt);
+  a.download = c.name.replace(/ /g,'_') + '_profile.txt';
+  a.click();
+  showToast('success', 'Profile exported');
+}
+
+/* ═══════════════════ TOAST ═══════════════════ */
+function showToast(type, msg) {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<div class="toast-icon">${type === 'success' ? '✓' : 'i'}</div><span>${msg}</span>`;
+  document.getElementById('toastContainer').appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateY(16px)'; el.style.transition = '.3s'; setTimeout(() => el.remove(), 300); }, 2800);
+}
+</script>
+
+</body>
+</html>
